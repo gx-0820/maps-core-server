@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.coreserver.mapper.DataRadarTargetMapper">
+
+    <select id="selectRadarTargetPage" resultType="com.example.coreserver.vo.target.RadarTargetListItemVO">
+        select concat(grouped.target_batch, '_', grouped.target_id) as targetId,
+               grouped.timestampBegin,
+               grouped.timestampEnd,
+               timestampdiff(second, grouped.timestampBegin, grouped.timestampEnd) as duration,
+               grouped.recordCount
+          from (
+                select drt.target_batch,
+                       drt.target_id,
+                       min(drt.timestamp) as timestampBegin,
+                       max(drt.timestamp) as timestampEnd,
+                       count(1) as recordCount
+                  from data_radar_target drt
+                 where drt.target_batch is not null
+                   and drt.target_id is not null
+                   and (drt.is_delete = 0 or drt.is_delete is null)
+                   and drt.timestamp <![CDATA[>=]]> #{startDateTime}
+                   and drt.timestamp <![CDATA[<]]> #{endDateTime}
+                  <if test="targetType != null">
+                   and drt.target_type = #{targetType}
+                  </if>
+                 group by drt.target_batch, drt.target_id
+          ) grouped
+         order by grouped.timestampEnd desc
+    </select>
+
+    <select id="selectRadarTrajectoryPage" resultType="com.example.coreserver.entity.DataRadarTarget">
+        select drt.id,
+               drt.timestamp,
+               drt.device_id,
+               drt.target_batch,
+               drt.target_id,
+               drt.protocol_type,
+               drt.frame_count,
+               drt.search_direction,
+               drt.search_cycle,
+               drt.pulse_group_number,
+               drt.total_target_count,
+               drt.valid_target_count,
+               drt.is_active,
+               drt.snr,
+               drt.`range`,
+               drt.azimuth2,
+               drt.pitch,
+               drt.speed,
+               drt.altitude,
+               drt.target_lat,
+               drt.target_lon,
+               drt.target_type,
+               drt.selection_flag,
+               drt.x_speed,
+               drt.y_speed,
+               drt.z_speed,
+               drt.is_delete
+          from data_radar_target drt
+         where drt.target_batch = #{targetBatch}
+           and drt.target_id = #{targetId}
+           and (drt.is_delete = 0 or drt.is_delete is null)
+         order by drt.timestamp desc
+    </select>
+</mapper>

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.camera";
+option java_outer_classname = "CameraProto";
+
+package camera;
+
+// Camera Service definition
+service CameraService {
+  // 获取摄像头设备列表
+  rpc GetCameraDevices (common.Empty) returns (DeviceListResponse) {}
+}
+
+// 设备列表响应
+message DeviceListResponse {
+  repeated DeviceInfo devices = 1;
+}
+
+// 设备信息
+message DeviceInfo {
+  string device_id = 1;
+  string device_name = 2;
+}

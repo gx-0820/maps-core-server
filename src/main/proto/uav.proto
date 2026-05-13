@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.uav";
+option java_outer_classname = "UavProto";
+
+package uav;
+
+// UAV Service definition
+service UavService {
+  // 获取设备列表
+  rpc GetElectricInvestigationDevices (common.Empty) returns (DeviceListResponse) {}
+  rpc GetUav (common.DeviceId) returns (common.Response) {}
+  // 获取系统配置
+  rpc GetSystemConfig (common.DeviceId) returns (SystemConfigResponse) {}
+
+  // 设置防御配置
+  rpc SetDefenseConfig (DefenseConfigRequest) returns (common.Response) {}
+
+  // 设置自动攻击
+  rpc SetAttackAuto (AttackAutoRequest) returns (common.Response) {}
+}
+
+// 设备列表响应
+message DeviceListResponse {
+  repeated DeviceInfo devices = 1;
+}
+
+// 设备信息
+message DeviceInfo {
+  string device_id = 1;
+  string device_name = 2;
+  // 可以根据实际需要添加更多字段
+}
+
+// 系统配置响应
+message SystemConfigResponse {
+  map<string, string> config = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+// 防御配置请求
+message DefenseConfigRequest {
+  string device_id = 1;
+  int32 defense_duration = 2;  // 防御持续时间
+  int32 defense_delay = 3;     // 防御延迟
+}
+
+// 自动攻击请求
+message AttackAutoRequest {
+  string device_id = 1;        // 设备id
+  bool is_cancel = 2;          // 是否取消
+  string freqs = 3;
+}
+// 获取目标列表
+message GetUavRequest {
+  string device_id = 1;
+}
+

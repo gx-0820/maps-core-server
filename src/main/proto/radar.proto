@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.radar";
+option java_outer_classname = "RadarProto";
+
+package radar;
+
+// Radar Service definition
+service RadarService {
+  // 获取雷达设备列表
+  rpc GetRadarDevices (common.Empty) returns (DeviceListResponse) {}
+  rpc GetTargets (common.DeviceId) returns (common.Response) {}
+
+  // 设置待机模式
+  rpc SetStandbyMode (common.DeviceId) returns (common.Response) {}
+
+  // 设置搜索模式
+  rpc SetSearchMode (SearchModeRequest) returns (common.Response) {}
+
+  // 进入跟踪模式
+  rpc EnterTrackMode (TrackModeRequest) returns (common.Response) {}
+
+  // 退出跟踪模式
+  rpc ExitTrackMode (ExitTrackRequest) returns (common.Response) {}
+}
+
+// 设备列表响应
+message DeviceListResponse {
+  repeated DeviceInfo devices = 1;
+}
+
+// 设备信息
+message DeviceInfo {
+  string device_id = 1;
+  string device_name = 2;
+}
+
+// 搜索模式请求
+message SearchModeRequest {
+  string device_id = 1;
+  int32 radar_count = 2;                       // 1.雷达数量 1-4
+  repeated int32 radar_ids = 3;                // 2.雷达ID列表
+  repeated int32 frequencies = 4;              // 3.频率列表
+  repeated int32 controls = 5;                 // 4.控制列表(1:收发同时工作, 2:只收工作, 3:只发工作)
+  double detection_range = 6;                   // 5.雷达侦测里程(km)
+  int32 height_limits_low_near = 7;            // 6.高度下限（距离小于3km）
+  int32 height_limits_low_far = 8;             // 7.高度下限（距离大于3km）
+  int32 height_limits_high = 9;                // 8.高度上限
+  int32 speed_limits_high = 10;                // 9.速度上限(m/s)
+  int32 speed_limits_low = 11;                 // 10.速度下限(m/s)
+  int32 distance_limits_high = 12;             // 11.距离上限
+  int32 distance_limits_low = 13;              // 12.距离下限
+  repeated int32 azimuth_offsets = 14;        // 13.方位补偿数组
+  repeated int32 pitch_offsets = 15;          // 14.俯仰补偿数组
+  repeated int32 distance_offsets = 16;       // 15.距离补偿数组
+  repeated double longitudes = 17;             // 16.经度数组
+  repeated double latitudes = 18;              // 17.纬度数组
+  repeated double altitudes = 19;              // 18.高度数组
+  repeated int32 install_pitch_angles = 20;   // 19.阵面安装仰角数组
+  repeated int32 install_roll_angles = 21;    // 20.阵面安装横滚角数组
+  repeated int32 install_angles = 22;    // 20.阵面方位架设角数组
+  double north_calibration_angle = 23;         // 21.校北角
+}
+
+// 跟踪模式请求
+message TrackModeRequest {
+  string device_id = 1;
+  int32 radar_id = 2;      // 雷达ID
+  int32 target_id = 3;     // 目标ID
+  float distance = 4;      // 距离
+  float azimuth = 5;       // 方位角
+  float pitch = 6;         // 俯仰角
+  float height = 7;        // 高度
+  float velocity = 8;      // 速度
+}
+
+// 退出跟踪请求
+message ExitTrackRequest {
+  string device_id = 1;
+  int32 radar_id = 2;      // 雷达ID
+  int32 target_id = 3;     // 目标ID
+  float distance = 4;      // 距离
+  float azimuth = 5;       // 方位角
+  float pitch = 6;         // 俯仰角
+  float height = 7;        // 高度
+  float velocity = 8;      // 速度
+}
+// 获取目标列表
+message GetTargetRequest {
+  string device_id = 1;
+}

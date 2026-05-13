@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.talent";
+option java_outer_classname = "TalentProto";
+
+package talent;
+
+service TalentService {
+  // 获取所有诱骗设备
+  rpc GetTalentDevices (common.Empty) returns (DeviceListResponse) {}
+  
+  // 更新连接设置
+  rpc UpdateConnectSetting (DeceptionRequest) returns (common.Response) {}
+  
+  // 更新命令
+  rpc UpdateCommand (DeceptionRequest) returns (common.Response) {}
+  
+  // 获取模拟状态
+  rpc GetSimulationStatus (common.DeviceId) returns (SimulationStatus) {}
+  
+  // 发送捕获命令
+  rpc SendCaptureCommand (CaptureRequest) returns (common.Response) {}
+  
+  // 发送驱动角度命令
+  rpc SendDriveAngleCommand (DriveAngleRequest) returns (common.Response) {}
+  
+  // 发送目标位置引导命令
+  rpc SendBootstrapPositionCommand (PositionRequest) returns (common.Response) {}
+  
+  // 发送防御命令
+  rpc SendDefenseCommand (common.DeviceId) returns (common.Response) {}
+  
+  // 发送干扰命令
+  rpc SendInterferenceCommand (common.DeviceId) returns (common.Response) {}
+  
+  // 发送禁飞命令
+  rpc SendNoFlyCommand (common.DeviceId) returns (common.Response) {}
+  
+  // 发送功率设置命令
+  rpc SendTransmitPowerCommand (TransmitPowerRequest) returns (common.Response) {}
+  
+  // 停止发射
+  rpc StopLaunch (common.DeviceId) returns (common.Response) {}
+  
+  // 检查设备是否已连接
+  rpc IsConnected (common.DeviceId) returns (ConnectionStatus) {}
+}
+
+// 设备列表响应
+message DeviceListResponse {
+  repeated DeviceInfo devices = 1;
+}
+
+// 设备信息
+message DeviceInfo {
+  string device_id = 1;
+  string device_name = 2;
+  // 可以根据实际需要添加更多字段
+}
+
+// 诱骗请求（用于更新连接设置或命令）
+message DeceptionRequest {
+  string device_id = 1;
+  string json_data = 2;
+}
+
+// 模拟状态响应
+message SimulationStatus {
+  bool success = 1;
+  string status_data = 2;  // JSON格式的状态数据
+}
+
+// 捕获请求
+message CaptureRequest {
+  string device_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  int32 altitude = 4;
+  int32 simulation_level = 5;
+  bool capture_type = 6;
+}
+
+// 驱动角度请求
+message DriveAngleRequest {
+  string device_id = 1;
+  double angle = 2;
+}
+
+// 位置请求（用于目标位置引导）
+message PositionRequest {
+  string device_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  int32 altitude = 4;
+}
+
+// 功率设置请求
+message TransmitPowerRequest {
+  string device_id = 1;
+  int32 power = 2;
+}
+
+// 连接状态响应
+message ConnectionStatus {
+  bool connected = 1;
+}

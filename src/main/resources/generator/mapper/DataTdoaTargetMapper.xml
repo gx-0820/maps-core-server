@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.DataTdoaTargetMapper">
+
+    <resultMap id="BaseResultMap" type="generator.domain.DataTdoaTarget">
+            <id property="id" column="id" />
+            <id property="timestamp" column="timestamp" />
+            <result property="targetBatch" column="target_batch" />
+            <result property="uavId" column="uav_id" />
+            <result property="uavModel" column="uav_model" />
+            <result property="uavModelNo" column="uav_model_no" />
+            <result property="userId" column="user_id" />
+            <result property="traceId" column="trace_id" />
+            <result property="uavLon" column="uav_lon" />
+            <result property="uavLat" column="uav_lat" />
+            <result property="uavAlt" column="uav_alt" />
+            <result property="uavHeight" column="uav_height" />
+            <result property="velocity" column="velocity" />
+            <result property="yaw" column="yaw" />
+            <result property="pilotLon" column="pilot_lon" />
+            <result property="pilotLat" column="pilot_lat" />
+            <result property="homeLon" column="home_lon" />
+            <result property="homeLat" column="home_lat" />
+            <result property="startFrom" column="start_from" />
+            <result property="duration" column="duration" />
+            <result property="frequency" column="frequency" />
+            <result property="areaFlag" column="area_flag" />
+            <result property="whiteListId" column="white_list_id" />
+            <result property="targetType" column="target_type" />
+            <result property="sensorTopic" column="sensor_topic" />
+            <result property="sensorId" column="sensor_id" />
+            <result property="sensorLongitude" column="sensor_longitude" />
+            <result property="sensorLatitude" column="sensor_latitude" />
+            <result property="sensorAltitude" column="sensor_altitude" />
+            <result property="uavAzimuth" column="uav_azimuth" />
+            <result property="uavDistance" column="uav_distance" />
+            <result property="deviceUuid" column="device_uuid" />
+            <result property="extensionDeviceId" column="extension_device_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,timestamp,target_batch,uav_id,uav_model,uav_model_no,
+        user_id,trace_id,uav_lon,uav_lat,uav_alt,
+        uav_height,velocity,yaw,pilot_lon,pilot_lat,
+        home_lon,home_lat,start_from,duration,frequency,
+        area_flag,white_list_id,target_type,sensor_topic,sensor_id,
+        sensor_longitude,sensor_latitude,sensor_altitude,uav_azimuth,uav_distance,
+        device_uuid,extension_device_id
+    </sql>
+</mapper>

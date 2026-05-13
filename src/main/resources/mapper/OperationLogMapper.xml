@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.coreserver.mapper.OperationLogMapper">
+    <select id="listOperationLogs" resultType="com.example.coreserver.vo.OperationLogVO">
+        SELECT
+        id,
+        opt_module,
+        opt_uri,
+        opt_type,
+        opt_method,
+        opt_desc,
+        request_method,
+        request_param,
+        response_data,
+        nickname,
+        ip_address,
+        ip_source
+        FROM operation_log
+        <where>
+            <if test="operationLogConditionDTO.value != null and operationLogConditionDTO.value != ''">
+                opt_module like concat('%',#{operationLogConditionDTO.value},'%')
+                or
+                opt_desc like concat('%',#{operationLogConditionDTO.value},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+</mapper>

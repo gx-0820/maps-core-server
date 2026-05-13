@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.coreserver.mapper.DataElintTargetMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.coreserver.entity.DataElintTarget">
+        <id property="id" column="id" />
+        <id property="timestamp" column="timestamp" />
+        <result property="targetBatch" column="target_batch" />
+        <result property="rawID" column="rawID" />
+        <result property="realID" column="realID" />
+        <result property="type" column="type" />
+        <result property="finder" column="finder" />
+        <result property="isRemoteID" column="isRemoteID" />
+        <result property="detectCounter" column="detectCounter" />
+        <result property="model" column="model" />
+        <result property="freq" column="freq" />
+        <result property="threat" column="threat" />
+        <result property="iconUrl" column="iconUrl" />
+        <result property="seenTimes" column="seenTimes" />
+        <result property="lon" column="lon" />
+        <result property="lat" column="lat" />
+        <result property="alt" column="alt" />
+        <result property="rcLon" column="rcLon" />
+        <result property="rcLat" column="rcLat" />
+        <result property="canSmartAttack" column="canSmartAttack" />
+        <result property="isSmartAttack" column="isSmartAttack" />
+        <result property="whiteListable" column="whiteListable" />
+        <result property="whiteListName" column="whiteListName" />
+        <result property="detectTime" column="detectTime" />
+        <result property="updateTime" column="updateTime" />
+        <result property="protocol" column="protocol" />
+        <result property="canIgnore" column="canIgnore" />
+        <result property="isIgnored" column="isIgnored" />
+        <result property="canPTZTo" column="canPTZTo" />
+        <result property="detailsTargetID" column="details_targetID" />
+        <result property="detailsDeviceID" column="details_deviceID" />
+        <result property="detailsDeviceName" column="details_deviceName" />
+        <result property="detailsDeviceLon" column="details_deviceLon" />
+        <result property="detailsDeviceLat" column="details_deviceLat" />
+        <result property="detailsFinder" column="details_finder" />
+        <result property="detailsDetectCounter" column="details_detectCounter" />
+        <result property="detailsAzimuth" column="details_azimuth" />
+        <result property="detailsDistance" column="details_distance" />
+        <result property="detailsUpdateTime" column="details_updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, timestamp, target_batch, rawID, realID, type, finder, isRemoteID, detectCounter, model, freq, threat, iconUrl, seenTimes, lon, lat, alt, rcLon, rcLat, canSmartAttack, isSmartAttack, whiteListable, whiteListName, detectTime, updateTime, protocol, canIgnore, isIgnored, canPTZTo, details_targetID, details_deviceID, details_deviceName, details_deviceLon, details_deviceLat, details_finder, details_detectCounter, details_azimuth, details_distance, details_updateTime
+    </sql>
+</mapper>

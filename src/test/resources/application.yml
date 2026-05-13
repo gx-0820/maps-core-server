@@ -1,0 +1,131 @@
+spring:
+  application:
+    name: core-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.168.3.102:3306/core_server?userSSL=false&userUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: wangminan
+    password: Lab418Server!
+    hikari:
+      maximum-pool-size: 10
+      max-lifetime: 1770000
+      druid:
+        validation-query: SELECT 1 FROM DUAL
+        initial-size: 10
+        min-idle: 10
+        max-active: 200
+        min-evictable-idle-time-millis: 300000
+        test-on-borrow: false
+        test-while-idle: true
+        time-between-eviction-runs-millis: 30000
+        pool-prepared-statements: true
+        max-open-prepared-statements: 100
+
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        # 启用空间支持
+        use_jdbc_metadata_defaults: false
+    # 启用SQL初始化
+    hibernate:
+      ddl-auto: none
+
+
+  data:
+    redis:
+      database: 1
+      host: 10.168.3.102
+      port: 6379
+      password: Lab418Server!
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.coreserver.entity
+
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.example.coreserver.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+server:
+  port: 8081
+
+decision:
+  min-laser-altitude: 150.0
+  max-spoofing-speed: 20.0
+  critical-zone-radius: 1500
+
+camera:
+  websocket:
+    ws-url: "ws://localhost:8001/ws/camera/{deviceId}"
+    binary-message-size-limit: 256KB
+    buffer-size: 1048576 * 10
+
+photoelectric:
+  websocket:
+    ws-url: "ws://localhost:8001/ws/photoelectric/{deviceId}"
+    binary-message-size-limit: 256KB
+    buffer-size: 1048576 * 10
+
+data:
+  websocket:
+    data-forward-url: "ws://localhost:8001/ws/forward"
+
+grpc:
+  client:
+    device-server:
+      address: "static://localhost:9000"
+      negotiationType: plaintext
+    algorithm-server:
+      address: "dns:///localhost:50051"
+      negotiationType: plaintext
+
+
+video:
+  stream:
+    quality: 0.7 # 压缩质量 (0.0-1.0)
+    fps: 30       # 帧率
+
+jwt:
+  secret-key: 418LabServer # jwt密钥
+#  ttl: 7200000 # jwt过期时间
+  ttl: 2592000000
+  token-name: Authorization # token名称
+
+var:
+  deception:
+    url: "192.168.10.85:8848"
+    capture:
+      latitude: 22.699680
+      longitude: 114.425033
+      altitude: 20
+  silas:
+    broker: wss://mqtt-dev.silassz.com:8083
+    topic: UP-PerceivedStatus-ENT-JXGY-010
+    username: jxgy
+    password: devEe85I6Uoq5W6Uf
+  radar:
+    lat: 22.700293
+    lon: 114.4277589
+  mqtt:
+    # 0 禁用mqtt传输
+    # 1 启用mqtt传输
+    status: 0
+
+minio:
+  endpoint: http://10.9.1.7:9001
+  accessKeyId: 20xUMFarDwEau73nSkwm
+  accessKeySecret: oVBe40qf0kO5SHwEIFzC1fhu8Ry9oe9fbNNzdP7e
+  bucket-name: video-storage

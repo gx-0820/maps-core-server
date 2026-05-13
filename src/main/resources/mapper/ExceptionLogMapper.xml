@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.coreserver.mapper.ExceptionLogMapper">
+
+    <select id="listExceptionLogs" resultType="com.example.coreserver.vo.ExceptionLogVO">
+        SELECT el.id,
+        el.opt_uri,
+        el.opt_method,
+        el.request_method,
+        el.request_param,
+        el.opt_desc,
+        el.exception_info,
+        el.ip_address,
+        el.ip_source
+        FROM exception_log el
+        <where>
+            <if test="exceptionLogConditionDTO.optDesc != null and exceptionLogConditionDTO.optDesc != ''">
+                el.opt_desc like concat('%',#{exceptionLogConditionDTO.optDesc},'%')
+            </if>
+        </where>
+        ORDER BY el.id DESC
+    </select>
+</mapper>

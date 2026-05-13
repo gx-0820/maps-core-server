@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.algorithm";
+option java_outer_classname = "AlgorithmProto";
+
+package algorithm;
+
+// 图像数据结构
+message Image {
+  string timestamp = 1;  //毫秒级时间戳
+  bytes data = 2;
+}
+
+// 原始JSON数据结构
+message RawData {
+  bytes json_data = 1;
+}
+
+// 算法结果数据结构
+message Result {
+  string timestamp = 1;
+  bytes json_data = 2;
+}
+
+// 空请求/响应类型
+message Empty {}
+
+service AntiDroneAlgorithmService {
+  // 推送给融合的数据接口
+  rpc PushFusionData (RawData) returns (Empty) {}
+
+  // 推送给轨迹预测的数据接口
+  rpc PushTrackData (RawData) returns (Empty) {}
+
+  // 推送TDOA的数据接口
+  rpc PushTdoaData (RawData) returns (Empty) {}
+
+  // 推送目标识别的数据接口
+  rpc PushImageData (Image) returns (Empty) {}
+
+  // 拉取融合数据接口
+  rpc SubscribeFusion (Empty)   returns (stream Result) {}
+
+  // 拉取预测轨迹数据接口
+  rpc SubscribeTrack  (Empty)   returns (stream Result) {}
+
+  // 拉取图像数据接口
+  rpc SubscribeImage  (Empty)   returns (stream Result) {}
+}

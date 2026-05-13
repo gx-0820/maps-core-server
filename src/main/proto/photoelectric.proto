@@ -1,0 +1,219 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.coreserver.grpc.photoelectric";
+option java_outer_classname = "PhotoelectricProto";
+
+package photoelectric;
+
+service PhotoelectricService {
+  // Get all photoelectric devices
+  rpc GetPhotoelectricDevices (common.Empty) returns (DeviceList) {}
+
+  // init device
+  rpc InitNorth(InitNorthRequest) returns(common.Response) {}
+
+  // Set target parameters
+  rpc SetTargetParameters (TargetParameters) returns (common.Response) {}
+
+  // Set corrections
+  rpc SetCorrections (Corrections) returns (common.Response) {}
+
+  // Set navigation parameters
+  rpc SetNavigationParameters (NavigationParameters) returns (common.Response) {}
+
+  // Control servo
+  rpc ControlServo (ServoControl) returns (common.Response) {}
+
+  // Set work mode
+  rpc SetWorkMode (WorkMode) returns (common.Response) {}
+
+  // Set IR power
+  rpc SetIRPower (PowerControl) returns (common.Response) {}
+
+  // Set laser power
+  rpc SetLaserPower (PowerControl) returns (common.Response) {}
+
+  // Set laser energy
+  rpc SetLaserEnergy (LaserEnergy) returns (common.Response) {}
+
+  // Launch or stop laser
+  rpc LaunchOrStop (LaunchControl) returns (common.Response) {}
+
+  // Set zero position
+  rpc SetZeroPosition (common.DeviceId) returns (common.Response) {}
+
+  // Set tracking mode
+  rpc SetTrackingMode (TrackingMode) returns (common.Response) {}
+
+  // Set capture mode
+  rpc SetCaptureMode (CaptureMode) returns (common.Response) {}
+
+  // Set guidance mode
+  rpc SetRadarGuidanceMode (RadarGuidanceParameters) returns (common.Response) {}
+  // Set guidance mode
+  rpc SetMixGuidanceMode (MixGuidanceParameters) returns (common.Response) {}
+  // Cancel guidance mode
+  rpc CancelGuidanceMode (common.DeviceId) returns (common.Response) {}
+
+  // Manipulate device
+  rpc Manipulate (ManipulateCommand) returns (common.Response) {}
+
+  // Set channel
+  rpc SetChannel (ChannelControl) returns (common.Response) {}
+
+  // Set target polarity
+  rpc SetTargetPolarity (PolarityControl) returns (common.Response) {}
+
+  // Set IR polarity
+  rpc SetIRPolarity (PolarityControl) returns (common.Response) {}
+
+  // Get Angle Data
+  rpc GetAngleData (AngleRequest) returns (AngleData) {}
+
+  //Manual Tracking
+  rpc TrackerManualTracking (ManualTrackingCommand) returns (common.Response) {}
+
+  // Set Standby
+  rpc SetStandby (common.DeviceId) returns (common.Response) {}
+
+  // Single Self Check
+  rpc SingleSelfCheck (common.DeviceId) returns (common.Response) {}
+
+  // Set Target Recognition
+  rpc SetTargetRecognition (RecognitionControl) returns (common.Response) {}
+
+
+  // 停止引导
+  rpc StopGuidance (GuidanceStopParams) returns (common.Response) {}
+}
+
+message DeviceInfo {
+  string device_id = 1;
+  string device_name = 2;
+}
+
+message DeviceList {
+  repeated DeviceInfo devices = 1;
+}
+message InitNorthRequest {
+  string device_id = 1;
+  int32 azimuth_deflection = 2;
+}
+message TargetParameters {
+  string device_id = 1;
+  int32 distance = 2;
+  double azimuth = 3;
+  double pitch = 4;
+}
+
+message Corrections {
+  string device_id = 1;
+  double azimuth_correction = 2;
+  double pitch_correction = 3;
+}
+
+message NavigationParameters {
+  string device_id = 1;
+  double angle = 2;
+  int32 number = 3;
+}
+
+message ServoControl {
+  string device_id = 1;
+  bool is_on = 2;
+}
+
+message WorkMode {
+  string device_id = 1;
+  bool is_auto = 2;
+}
+
+message PowerControl {
+  string device_id = 1;
+  bool is_on = 2;
+}
+
+message LaserEnergy {
+  string device_id = 1;
+  int32 type = 2;
+}
+
+message LaunchControl {
+  string device_id = 1;
+  bool is_launch = 2;
+}
+
+message TrackingMode {
+  string device_id = 1;
+  bool is_tracking = 2;
+}
+
+message CaptureMode {
+  string device_id = 1;
+  bool is_capture = 2;
+}
+
+message RadarGuidanceParameters {
+  string device_id = 1;
+  int32 target_distance = 2;
+  double target_azimuth = 3;
+  double target_elevation = 4;
+  int32 video_recording_duration = 5;
+  int32 target_id = 6;
+  string data_type = 7;
+  string batch_id = 8;
+}
+
+message MixGuidanceParameters {
+  string device_id = 1;
+  int32 target_distance = 2;
+  double target_azimuth = 3;
+  double target_elevation = 4;
+}
+message ManipulateCommand {
+  string device_id = 1;
+  int32 type = 2;
+  int32 press_type = 3;
+}
+
+message ChannelControl {
+  string device_id = 1;
+  bool is_tv = 2;
+}
+
+message PolarityControl {
+  string device_id = 1;
+  bool is_white = 2;
+}
+
+message AngleRequest {
+  string device_id = 1;
+}
+
+message AngleData {
+  string device_id = 1;
+  double azimuth_angle = 2;
+  double pitch_angle = 3;
+  double distance = 4;
+}
+
+message ManualTrackingCommand {
+  string device_id = 1;
+  int32 x = 2;
+  int32 y = 3;
+}
+
+message RecognitionControl {
+  string device_id = 1;
+  bool enable = 2;
+}
+
+message GuidanceStopParams {
+  string device_id = 1;
+  string target_id = 2;
+  // 计时 0 立即执行
+  int32 sec = 3;
+}

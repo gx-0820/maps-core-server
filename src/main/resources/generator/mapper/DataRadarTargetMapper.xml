@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.DataRadarTargetMapper">
+
+    <resultMap id="BaseResultMap" type="generator.domain.DataRadarTarget">
+            <id property="id" column="id" />
+            <id property="timestamp" column="timestamp" />
+            <result property="deviceId" column="device_id" />
+            <result property="targetBatch" column="target_batch" />
+            <result property="targetId" column="target_id" />
+            <result property="protocolType" column="protocol_type" />
+            <result property="frameCount" column="frame_count" />
+            <result property="searchDirection" column="search_direction" />
+            <result property="searchCycle" column="search_cycle" />
+            <result property="pulseGroupNumber" column="pulse_group_number" />
+            <result property="totalTargetCount" column="total_target_count" />
+            <result property="validTargetCount" column="valid_target_count" />
+            <result property="isActive" column="is_active" />
+            <result property="snr" column="snr" />
+            <result property="range" column="range" />
+            <result property="azimuth2" column="azimuth2" />
+            <result property="pitch" column="pitch" />
+            <result property="speed" column="speed" />
+            <result property="altitude" column="altitude" />
+            <result property="targetLat" column="target_lat" />
+            <result property="targetLon" column="target_lon" />
+            <result property="targetType" column="target_type" />
+            <result property="selectionFlag" column="selection_flag" />
+            <result property="xSpeed" column="x_speed" />
+            <result property="ySpeed" column="y_speed" />
+            <result property="zSpeed" column="z_speed" />
+            <result property="isDelete" column="is_delete" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,timestamp,device_id,target_batch,target_id,protocol_type,
+        frame_count,search_direction,search_cycle,pulse_group_number,total_target_count,
+        valid_target_count,is_active,snr,range,azimuth2,
+        pitch,speed,altitude,target_lat,target_lon,
+        target_type,selection_flag,x_speed,y_speed,z_speed,
+        is_delete
+    </sql>
+</mapper>

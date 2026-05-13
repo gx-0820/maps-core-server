@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.coreserver.mapper.DataTdoaTargetMapper">
+
+    <select id="selectTdoaTargetPage" resultType="com.example.coreserver.vo.target.TdoaTargetListItemVO">
+        select concat(grouped.uav_id, '_', grouped.trace_id) as targetId,
+               (
+                   select latest.uav_model
+                     from data_tdoa_target latest
+                    where latest.uav_id = grouped.uav_id
+                      and latest.trace_id = grouped.trace_id
+                      and latest.timestamp <![CDATA[>=]]> #{startDateTime}
+                      and latest.timestamp <![CDATA[<]]> #{endDateTime}
+                    <if test="targetType != null">
+                      and latest.target_type = #{targetType}
+                    </if>
+                    order by latest.timestamp desc, latest.id desc
+                    limit 1
+               ) as uavModel,
+               grouped.timestampBegin,
+               grouped.timestampEnd,
+               timestampdiff(second, grouped.timestampBegin, grouped.timestampEnd) as duration,
+               grouped.recordCount
+          from (
+                select dtt.uav_id,
+                       dtt.trace_id,
+                       min(dtt.timestamp) as timestampBegin,
+                       max(dtt.timestamp) as timestampEnd,
+                       count(1) as recordCount
+                  from data_tdoa_target dtt
+                 where dtt.uav_id is not null
+                   and dtt.trace_id is not null
+                   and dtt.timestamp <![CDATA[>=]]> #{startDateTime}
+                   and dtt.timestamp <![CDATA[<]]> #{endDateTime}
+                  <if test="targetType != null">
+                   and dtt.target_type = #{targetType}
+                  </if>
+                 group by dtt.uav_id, dtt.trace_id
+          ) grouped
+         order by grouped.timestampEnd desc
+    </select>
+
+    <select id="selectTdoaTrajectoryPage" resultType="com.example.coreserver.entity.DataTdoaTarget">
+        select dtt.id,
+               dtt.timestamp,
+               dtt.target_batch,
+               dtt.uav_id,
+               dtt.uav_model,
+               dtt.uav_model_no,
+               dtt.user_id,
+               dtt.trace_id,
+               dtt.uav_lon,
+               dtt.uav_lat,
+               dtt.uav_alt,
+               dtt.uav_height,
+               dtt.velocity,
+               dtt.yaw,
+               dtt.pilot_lon,
+               dtt.pilot_lat,
+               dtt.home_lon,
+               dtt.home_lat,
+               dtt.start_from,
+               dtt.duration,
+               dtt.frequency,
+               dtt.area_flag,
+               dtt.white_list_id,
+               dtt.target_type,
+               dtt.sensor_topic,
+               dtt.sensor_id,
+               dtt.sensor_longitude,
+               dtt.sensor_latitude,
+               dtt.sensor_altitude,
+               dtt.uav_azimuth,
+               dtt.uav_distance,
+               dtt.device_uuid,
+               dtt.extension_device_id
+         from data_tdoa_target dtt
+         where dtt.uav_id = #{uavId}
+           and dtt.trace_id = #{traceId}
+         order by dtt.timestamp desc
+    </select>
+</mapper>

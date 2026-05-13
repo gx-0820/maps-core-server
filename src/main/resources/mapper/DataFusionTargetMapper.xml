@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.coreserver.mapper.DataFusionTargetMapper">
+
+    <select id="selectFusionTargetPage" resultType="com.example.coreserver.vo.target.FusionTargetListItemVO">
+        select cast(grouped.target_batch as char) as targetId,
+               (
+                   select latest.uav_model
+                     from data_fusion_target latest
+                    where latest.target_batch = grouped.target_batch
+                      and latest.timestamp <![CDATA[>=]]> #{startDateTime}
+                      and latest.timestamp <![CDATA[<]]> #{endDateTime}
+                    <if test="targetType != null and targetType != ''">
+                      and latest.target_type = #{targetType}
+                    </if>
+                    order by latest.timestamp desc, latest.id desc
+                    limit 1
+               ) as uavModel,
+               (
+                   select latest.target_type
+                     from data_fusion_target latest
+                    where latest.target_batch = grouped.target_batch
+                      and latest.timestamp <![CDATA[>=]]> #{startDateTime}
+                      and latest.timestamp <![CDATA[<]]> #{endDateTime}
+                    <if test="targetType != null and targetType != ''">
+                      and latest.target_type = #{targetType}
+                    </if>
+                    order by latest.timestamp desc, latest.id desc
+                    limit 1
+               ) as targetType,
+               grouped.timestampBegin,
+               grouped.timestampEnd,
+               timestampdiff(second, grouped.timestampBegin, grouped.timestampEnd) as duration,
+               grouped.recordCount
+          from (
+                select dft.target_batch,
+                       min(dft.timestamp) as timestampBegin,
+                       max(dft.timestamp) as timestampEnd,
+                       count(1) as recordCount
+                  from data_fusion_target dft
+                 where dft.timestamp <![CDATA[>=]]> #{startDateTime}
+                   and dft.timestamp <![CDATA[<]]> #{endDateTime}
+                  <if test="targetType != null and targetType != ''">
+                   and dft.target_type = #{targetType}
+                  </if>
+                 group by dft.target_batch
+          ) grouped
+         order by grouped.timestampEnd desc
+    </select>
+
+    <select id="selectFusionTrajectoryPage" resultType="com.example.coreserver.entity.DataFusionTarget">
+        select dft.id,
+               dft.target_batch,
+               dft.radar_target_id,
+               dft.tdoa_target_id,
+               dft.timestamp,
+               dft.`range`,
+               dft.azimuth,
+               dft.pitch,
+               dft.speed,
+               dft.altitude,
+               dft.target_lat,
+               dft.target_lon,
+               dft.target_type,
+               dft.frequency,
+               dft.start_from,
+               dft.duration,
+               dft.uav_model,
+               dft.white_list_id
+          from data_fusion_target dft
+         where dft.target_batch = #{targetBatch}
+         order by dft.timestamp desc
+    </select>
+</mapper>
