@@ -293,12 +293,23 @@ public class CountermeasureAutoTaskService {
         }
 
         CountermeasureStrategyPreset preset = strategyProfile.getActivePresetConfig();
-        controller.sendOperation("本轮自动处置策略: " + (strategyProfile.getActivePreset().trim().equals("A") ? "软防御" : "硬防御"));
-        log.info("本轮自动处置策略: activePreset={}, mode={}", strategyProfile.getActivePreset(), preset.getMode());
+        String presetLabel = describePreset(strategyProfile.getActivePreset());
+        controller.sendOperation("本轮自动处置策略: " + presetLabel);
+        log.info("本轮自动处置策略: activePreset={}, presetLabel={}, mode={}",
+                strategyProfile.getActivePreset(), presetLabel, preset.getMode());
         return switch (String.valueOf(preset.getMode()).toUpperCase()) {
             case "FIXED" -> chooseFixedPlan(preset, candidates);
             case "ADAPTIVE" -> chooseAdaptivePlan(preset, candidates);
-            default -> null;
+            case "RESERVED" -> {
+                controller.sendOperation("当前预置策略为预留策略，本轮不执行自动处置");
+                log.info("当前预置策略为RESERVED，本轮不执行自动处置: activePreset={}", strategyProfile.getActivePreset());
+                yield null;
+            }
+            default -> {
+                log.warn("自动处置策略模式不受支持: activePreset={}, mode={}",
+                        strategyProfile.getActivePreset(), preset.getMode());
+                yield null;
+            }
         };
     }
 
@@ -387,6 +398,18 @@ public class CountermeasureAutoTaskService {
 
     private int defaultInt(Integer value, int defaultValue) {
         return value == null ? defaultValue : value;
+    }
+
+    private String describePreset(String activePreset) {
+        if (activePreset == null || activePreset.isBlank()) {
+            return "未命名策略";
+        }
+        return switch (activePreset.trim().toUpperCase()) {
+            case "A" -> "软反制策略A";
+            case "B" -> "软反制策略B";
+            case "C" -> "硬反制策略C";
+            default -> "预置策略" + activePreset.trim();
+        };
     }
 
     private static int severityRank(ThreatAssessmentResult.ThreatLevel threatLevel) {

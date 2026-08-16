@@ -1,10 +1,13 @@
 package com.example.coreserver.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.example.coreserver.common.RespCodeEnum;
 import com.example.coreserver.common.Result;
+import com.example.coreserver.entity.PhotoelectricFileRecord;
 import com.example.coreserver.service.business.TargetQueryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -72,7 +76,18 @@ public class TargetController {
     public ResponseEntity<Result> getRadarTargetOFDVideo(
             @PathVariable String targetId) {
         try {
-            return ResponseEntity.ok(Result.success(targetQueryService.getRadarTargetOFDVideo(targetId)));
+            //20260514视频如果转成mp4,则返回mp4路径
+            List<PhotoelectricFileRecord> list = targetQueryService.getRadarTargetOFDVideo(targetId);
+            if(CollectionUtil.isNotEmpty(list)){
+                for (PhotoelectricFileRecord photoelectricFileRecord : list) {
+                    if(StringUtils.isNoneBlank(photoelectricFileRecord.getLocalPathMp4())){
+                        photoelectricFileRecord.setLocalPath(photoelectricFileRecord.getLocalPathMp4());
+                    }
+                }
+                return ResponseEntity.ok(Result.success(list));
+            }else{
+                return ResponseEntity.ok(Result.success(null));
+            }
         } catch (IllegalArgumentException ex) {
             log.warn("Invalid radar trajectory request: {}", ex.getMessage());
             return ResponseEntity.badRequest().body(Result.error(RespCodeEnum.REQUEST_ERROR, ex.getMessage()));

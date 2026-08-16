@@ -35,4 +35,8 @@ public class Result {
     public static Result error(RespCodeEnum respCodeEnum, Object obj) {
         return new Result(respCodeEnum.getCode(),respCodeEnum.getMessage(), LocalDateTime.now().format(formatter), System.currentTimeMillis(), obj);
     }
+
+    public static Result error(int code, String message) {
+        return new Result(code, message, LocalDateTime.now().format(formatter), System.currentTimeMillis(), null);
+    }
 }

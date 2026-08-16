@@ -2,14 +2,16 @@ package com.example.coreserver.controller;
 
 import com.example.coreserver.dto.CountermeasureRequest;
 import com.example.coreserver.dto.ModeUpdateRequest;
+import com.example.coreserver.dto.countermeasure.CountermeasureModeOptionsResponse;
 import com.example.coreserver.entity.countermeasure.CountermeasureMode;
+import com.example.coreserver.entity.countermeasure.CountermeasureOmcFlag;
 import com.example.coreserver.service.business.CountermeasureService;
 import com.example.coreserver.service.countermeasure.CountermeasureAutoTaskService;
 import com.example.coreserver.service.countermeasure.CountermeasureConfigService;
+import com.example.coreserver.service.countermeasure.CountermeasureDeviceDirectoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +34,7 @@ public class CountermeasureController {
 
     private final CountermeasureConfigService countermeasureConfigService;
     private final CountermeasureAutoTaskService countermeasureAutoTaskService;
+    private final CountermeasureDeviceDirectoryService countermeasureDeviceDirectoryService;
     private final CountermeasureService countermeasureService;
 
     // 处理POST请求，用于更新模式
@@ -39,10 +42,25 @@ public class CountermeasureController {
     @PostMapping("/mode")
     @PreAuthorize("hasAuthority('DEVICE_MANIPULATE')")
     public ResponseEntity<String> updateMode(@RequestBody ModeUpdateRequest request) {
-        countermeasureConfigService.setMode(request.getMode(), "api");
         if (CountermeasureMode.AUTO.equals(request.getMode())) {
+            CountermeasureOmcFlag omcFlag = request.getOmcFlag();
+            CountermeasureModeOptionsResponse optionsResponse = countermeasureDeviceDirectoryService.buildModeOptions();
+            if (omcFlag == null
+                    && optionsResponse.supportedOmcFlags().size() == 1
+                    && optionsResponse.supportedOmcFlags().contains(CountermeasureOmcFlag.NONE)) {
+                omcFlag = CountermeasureOmcFlag.NONE;
+            }
+            if (omcFlag == null) {
+                return ResponseEntity.badRequest().body("切换到自动模式时必须提交OMC_flag");
+            }
+            if (!optionsResponse.supportedOmcFlags().contains(omcFlag)) {
+                return ResponseEntity.badRequest().body("当前现场设备不支持所选OMC_flag: " + omcFlag);
+            }
+            countermeasureConfigService.setOmcFlag(omcFlag, "api");
+            countermeasureConfigService.setMode(request.getMode(), "api");
             countermeasureAutoTaskService.triggerImmediateRound();
         } else {
+            countermeasureConfigService.setMode(request.getMode(), "api");
             countermeasureAutoTaskService.stopCurrentIntervention("接口请求切回人工模式");
         }
         return ResponseEntity.ok("模式更新成功");
@@ -54,6 +72,13 @@ public class CountermeasureController {
     @PreAuthorize("hasAuthority('DEVICE_MANIPULATE')")
     public ResponseEntity<CountermeasureMode> getCurrentMode() {
         return ResponseEntity.ok(countermeasureConfigService.getMode());
+    }
+
+    @ApiOperation(value = "获取自动处置模式切换选项")
+    @GetMapping("/mode/options")
+    @PreAuthorize("hasAuthority('DEVICE_MANIPULATE')")
+    public ResponseEntity<CountermeasureModeOptionsResponse> getModeOptions() {
+        return ResponseEntity.ok(countermeasureDeviceDirectoryService.buildModeOptions());
     }
 
     // 处理POST请求，用于处理威胁

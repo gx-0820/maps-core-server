@@ -52,6 +52,11 @@ public class RadarService {
         return stub.enterTrackMode(request);
     }
 
+    public Response setTrackerTarget(int targetId) {
+        TrackerTargetRequest request = TrackerTargetRequest.newBuilder().setTargetId(targetId).build();
+        return stub.setTrackerTarget(request);
+    }
+
     public Response exitTrackMode(ExitTrackRequest request) {
         return stub.exitTrackMode(request);
     }

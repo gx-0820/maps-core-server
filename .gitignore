@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs ###
+logs/
+*.log
+request_logs/
+
+### Local Docs ###
+doc/
+!doc/
+doc/*
+!doc/photoelectric-video-mp4-conversion-implementation.md
+
+### Local FFmpeg ###
+tools/ffmpeg/*
+!tools/ffmpeg/.gitkeep

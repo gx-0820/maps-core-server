@@ -7,8 +7,12 @@ import com.example.coreserver.grpc.talent.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class TalentService {
+
+    private static final long DEVICE_RPC_DEADLINE_MS = 2_000L;
 
     @GrpcClient("device-server")
     private TalentServiceGrpc.TalentServiceBlockingStub stub;
@@ -45,7 +49,8 @@ public class TalentService {
     }
 
     public Response sendBootstrapPositionCommand(PositionRequest positionRequest) {
-        Response response = stub.sendBootstrapPositionCommand(positionRequest);
+        Response response = stub.withDeadlineAfter(DEVICE_RPC_DEADLINE_MS, TimeUnit.MILLISECONDS)
+                .sendBootstrapPositionCommand(positionRequest);
         return response;
     }
 

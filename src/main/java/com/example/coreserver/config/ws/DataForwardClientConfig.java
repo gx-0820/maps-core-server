@@ -92,7 +92,7 @@ public class DataForwardClientConfig {
             }
         } catch (Exception e) {
             System.err.println("WebSocket连接失败: " + e.getMessage());
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

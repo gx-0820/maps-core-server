@@ -12,9 +12,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PhotoelectricService {
+
+    private static final long DEVICE_RPC_DEADLINE_MS = 2_000L;
 
     @GrpcClient("device-server")
     private PhotoelectricServiceGrpc.PhotoelectricServiceBlockingStub stub;
@@ -85,7 +88,8 @@ public class PhotoelectricService {
     }
 
     public Response setRadarGuidanceMode(RadarGuidanceParameters guidance) {
-        Response response = stub.setRadarGuidanceMode(guidance);
+        Response response = stub.withDeadlineAfter(DEVICE_RPC_DEADLINE_MS, TimeUnit.MILLISECONDS)
+                .setRadarGuidanceMode(guidance);
         return response;
     }
 
@@ -152,6 +156,7 @@ public class PhotoelectricService {
      * 停止引导
      */
     public void stopGuidance(GuidanceStopParams params) {
-        stub.stopGuidance(params);
+        stub.withDeadlineAfter(DEVICE_RPC_DEADLINE_MS, TimeUnit.MILLISECONDS)
+                .stopGuidance(params);
     }
 }

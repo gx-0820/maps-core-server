@@ -5,7 +5,7 @@ package com.example.coreserver.entity.countermeasure;
  */
 public enum CountermeasureAction {
     NO_ACTION, // 不操作
-    UAV_ATTACK_AUTO, // 电侦-自动攻击
+    UAV_ATTACK_AUTO, // 下发干扰指令
     DECEPTION_DRIVE, // 诱骗-驱离
     DECEPTION_CAPTURE, // 诱骗-捕获
     DECEPTION_DEFENSE, // 诱骗-金钟罩
